@@ -1,34 +1,64 @@
 <h1> {{sayHello('Jonathan Doe')}} </h1>
 <p>Date/Time - {{current_time}}</p> <!--This is called interpolation syntax-->
 
-
-<div>
-    <input [(ngModel)]="newAppointmentTitle" placeholder="appointment description"/>
-    <input  [(ngModel)]="newAppointmentDate" type="date"  placeholder="appointment date"/>
-    <button (click)="addAppointment()">Add appointment</button>
+<div class="container">
+    <div class="card  mt-3">
+        <div class="row ">
+            <div class="col">
+                <h2 class="text-center" >Create New Appointments</h2>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <input class="form-control" [(ngModel)]="newAppointmentTitle" placeholder="appointment description"/>
+            </div>
+            <div class="col-md-4">
+                <input  class="form-control" [(ngModel)]="newAppointmentDate" type="date"  placeholder="appointment date"/>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" (click)="addAppointment()">Add appointment</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<ul>
-    <li  *ngIf="appointments.length == 0" >Hooray... no tasks left... create some more </li>
-    <li *ngFor="let app of appointments; index as i">
-        [{{i}}] {{app.title}} at {{app.date | date:'dd-MM-yyyy'}}
-        <button (click)="doneAppointment(i)"> done </button>
-    </li>
-</ul>
+
+<br>
+<div>
+    <button class="btn btn-primary" *ngIf="tabActive=='COMPLETED'" (click)="tabActive='TASK'">show tasks</button>
+    <button class="btn btn-primary" *ngIf="tabActive=='TASK'" (click)="tabActive='COMPLETED'">show competed</button>
+</div>
+
+<div  *ngIf="tabActive=='TASK'">
+    <h2 class="text-center mt-5">----- Active appointments ---- </h2>
+    <div>
+            <button *ngFor="let pageNo of range(this.appointmentPage.arr.length)">{{pageNo}}</button>
+    </div>
+    <ul class="list-group mt-3">
+        <li class="list-group-item d-flex justify-content-between"  *ngIf="appointments.length == 0" >Hooray... no tasks left... create some more </li>
+        <li class="list-group-item d-flex justify-content-between" *ngFor="let app of this.appointments; index as i">
+            [{{i}}] {{app.title}} at {{app.date | date:'dd-MM-yyyy'}}
+            <button class="btn btn-primary"  (click)="doneAppointment(i)"> done </button>
+        </li>
+    </ul>
+</div>
 
 
-<p  *ngIf="done_appointments.length > 0" >----- done appointments ---- </p>
-<table *ngIf="done_appointments.length > 0" border="1px">
-    <tr>
-        <th>Id</th>
-        <th>Title</th>
-        <th>Date</th>
-        <th>Action</th>
-    </tr>
-    <tr *ngFor="let d of done_appointments; index as i ">
-        <td>{{i}}</td>
-        <td>{{d.title}}</td>
-        <td>{{d.date}}</td>
-        <td><button (click)="redoTask(i)">redo</button></td>
-    </tr>
-</table>
+
+<div *ngIf="tabActive=='COMPLETED'" >
+    <h2 class="text-center mt-5">----- Done appointments ---- </h2>
+    <table border="1px">
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        <tr *ngFor="let d of done_appointments; index as i ">
+            <td>{{i}}</td>
+            <td><s>{{d.title}}</s></td>
+            <td>{{d.date}}</td>
+            <td><button class="btn btn-primary"  (click)="redoTask(i)">redo</button></td>
+        </tr>
+    </table>
+</div>
